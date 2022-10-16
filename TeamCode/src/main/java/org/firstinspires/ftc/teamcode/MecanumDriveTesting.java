@@ -37,14 +37,14 @@ public class MecanumDriveTesting extends OpMode {
 
     @Override
     public void loop() {
-        double drive = -gamepad1.left_stick_y;
-        double strafe = gamepad1.left_stick_x;
-        double turn = gamepad1.right_stick_x;
+        double drive = gamepad1.left_stick_x * .75;
+        double strafe = -gamepad1.right_stick_x * 1.1;
+        double turn = -gamepad1.right_stick_y;
 
-        double frontLeftPower = Range.clip(drive + strafe + turn, -1.0, 1.0);
-        double frontRightPower = Range.clip(drive - strafe - turn, -1.0, 1.0);
-        double backLeftPower = Range.clip(drive + strafe - turn, -1.0, 1.0);
-        double backRightPower = Range.clip(drive - strafe + turn, -1.0, 1.0);
+        double frontLeftPower = Range.clip(drive - strafe + turn, -0.7, 0.7);
+        double frontRightPower = Range.clip(drive - strafe - turn, -0.7, 0.7);
+        double backLeftPower = Range.clip(drive + strafe + turn, -0.7, 0.7);
+        double backRightPower = Range.clip(-drive - strafe + turn, -0.7, 0.7);
 
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
