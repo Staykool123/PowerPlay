@@ -10,15 +10,12 @@ import org.firstinspires.ftc.teamcode.subsystems.EncoderSlider;
 
 @TeleOp(name = "Teleop")
 public class Teleop extends OpMode {
-    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
+    private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;
     private Servo leftclaw, rightclaw;
-    //    private Servo servo;
     public static final double open1 = 0;
     public static final double close1 = 0.45;
     public static final double open2 = 0.45;
     public static final double close2 = 0;
-
-    EncoderSlider slider;
 
     @Override
     public void init() {
@@ -29,7 +26,7 @@ public class Teleop extends OpMode {
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
-
+        liftDrive = hardwareMap.get(DcMotorEx.class, "lift");
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -37,9 +34,7 @@ public class Teleop extends OpMode {
         // Change the text in quotes to match any servo name on your robot.
 //        servo = hardwareMap.get(Servo.class, "left_hand");
         leftclaw = hardwareMap.get(Servo.class, "leftclaw");
-        rightclaw = hardwareMap.get(Servo.class,"wristclaw");
-        slider = new EncoderSlider(hardwareMap);
-        slider.init();
+        rightclaw = hardwareMap.get(Servo.class,"rightclaw");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -68,21 +63,23 @@ public class Teleop extends OpMode {
             leftclaw.setPosition(open1);
             rightclaw.setPosition(open2);
         }
-        if (gamepad1.y){
+        if (gamepad1.y) {
             leftclaw.setPosition(close1);
             rightclaw.setPosition(close2);
-            if(gamepad2.dpad_up){
-                slider.moveByInchTele(2, 0.5);
-            }
-            if(gamepad2.dpad_down){
-                slider.moveByInchTele(-2, 0.5);
-            }
+        }
+        if (gamepad1.dpad_up) {
+            liftDrive.setPower(1.0);
+        }
+        if (gamepad1.dpad_down) {
+            liftDrive.setPower(-1.0);
+        }
+        if (!gamepad1.dpad_down && !gamepad1.dpad_up) {
+            liftDrive.setPower(0.0);
+        }
+
             telemetry.addData("Motors", "frontLeft (%.2f), frontRight (%.2f), backLeft (%.2f), backRight(%.2f)",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-            telemetry.addData("lift Position", slider.liftMotor.getCurrentPosition());
-            telemetry.addData("lift Target", slider.targetPos);
             telemetry.update();
 
         }
     }
-}
