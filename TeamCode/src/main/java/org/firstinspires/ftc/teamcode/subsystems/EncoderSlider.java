@@ -1,13 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-//import org.firstinspires.ftc.teamcode.teamLib.utils.TeleBug;
-
 public class EncoderSlider {
-    public DcMotorEx liftMotor; //for bettrn PID of run to position
+    public DcMotorEx liftMotor; //for better PID of run to position
 
     protected HardwareMap hwMap;
     //protected TeleBug teleBug;
@@ -17,8 +15,9 @@ public class EncoderSlider {
     public static final double TICKS_PER_INCH = TICKS_PER_MOTOR_REV / (WHEEL_DIAMETER_INCHES * Math.PI);
 
     private static final int POSITIONING_TOLERANCE = 30; //The amount of ticks the DriveByInch method should be allowed to deviate by
-    public static int BOTTOM = 0; //positon at the bottom
-    private static final int TOP = 6000; //positon at the top
+    public static int BOTTOM = 0; //position at the bottom
+    private static final int TOP = 6000; //position at the top
+    public int targetPos;
 
     public EncoderSlider (HardwareMap hwMap){
         this.hwMap = hwMap;
@@ -27,12 +26,13 @@ public class EncoderSlider {
     public void init() {
         liftMotor = hwMap.get(DcMotorEx.class, "lift");
         liftMotor.setTargetPositionTolerance(POSITIONING_TOLERANCE);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void moveByInch(double inches, double power){
-        int targetPos = (int)(inches * TICKS_PER_INCH);
+        targetPos = (int)(inches * TICKS_PER_INCH);
 
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         liftMotor.setPower(power);
 
@@ -44,7 +44,7 @@ public class EncoderSlider {
     }
 
     public void moveByInchTele(double inches, double power){
-        int targetPos = (int)(inches * TICKS_PER_INCH);
+        targetPos = (int)(inches * TICKS_PER_INCH);
 
 //        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -78,7 +78,7 @@ public class EncoderSlider {
     public void firstPos() {
         moveByInch(7, 1.);
     }
-    public void bottom() { //move to the bottome position
+    public void bottom() { //move to the bottom position
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         liftMotor.setPower(-1.0);
