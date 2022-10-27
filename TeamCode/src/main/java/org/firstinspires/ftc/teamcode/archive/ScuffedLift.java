@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp
 public class ScuffedLift extends LinearOpMode {
     @Override
-    //don't care about this it's totally useless atm
     public void runOpMode() throws InterruptedException {
         //error im getting: "Unable to open REV Robotics USB Expansion HUb Portal [DQ2AUXVC]
         //
