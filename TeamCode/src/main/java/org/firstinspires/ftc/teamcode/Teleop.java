@@ -30,9 +30,6 @@ public class Teleop extends OpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Connect to servo (Assume PushBot Left Hand)
-        // Change the text in quotes to match any servo name on your robot.
-//        servo = hardwareMap.get(Servo.class, "left_hand");
         leftclaw = hardwareMap.get(Servo.class, "leftclaw");
         rightclaw = hardwareMap.get(Servo.class,"rightclaw");
 
