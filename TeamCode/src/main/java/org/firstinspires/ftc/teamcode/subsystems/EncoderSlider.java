@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class EncoderSlider {
+    //don't care about this it's totally useless atm
     public DcMotorEx liftMotor; //for better PID of run to position
 
     protected HardwareMap hwMap;
@@ -24,7 +25,7 @@ public class EncoderSlider {
     }
 
     public void init() {
-        liftMotor = hwMap.get(DcMotorEx.class, "lift");
+        liftMotor = hwMap.get(DcMotorEx.class, "lifthmm");
         liftMotor.setTargetPositionTolerance(POSITIONING_TOLERANCE);
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }

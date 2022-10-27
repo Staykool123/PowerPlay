@@ -1,22 +1,27 @@
-package org.firstinspires.ftc.teamcode.archive;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
-public class ScuffedLift extends LinearOpMode {
+public class MecanumDrive extends LinearOpMode {
     @Override
-    //don't care about this it's totally useless atm
     public void runOpMode() throws InterruptedException {
         //error im getting: "Unable to open REV Robotics USB Expansion HUb Portal [DQ2AUXVC]
         //
         // Declare our motors
         // Make sure your ID's match your configuration
-        DcMotor motorFrontLeft = hardwareMap.dcMotor.get("lift");
+        DcMotor motorFrontLeft = hardwareMap.dcMotor.get("FrontLeft");
+        DcMotor motorBackLeft = hardwareMap.dcMotor.get("BackLeft");
+        DcMotor motorFrontRight = hardwareMap.dcMotor.get("FrontRight");
+        DcMotor motorBackRight = hardwareMap.dcMotor.get("BackRight");
 
         // Reverse the right side motors
         // Reverse left motors if you are using NeveRests
+        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
 
@@ -31,9 +36,15 @@ public class ScuffedLift extends LinearOpMode {
             // This ensures all the powers maintain the same ratio, but only when
             // at least one is out of the range [-1, 1]
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double Lift = (y + x + rx) / denominator;
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
 
-            motorFrontLeft.setPower(Lift);
+            motorFrontLeft.setPower(frontLeftPower);
+            motorBackLeft.setPower(backLeftPower);
+            motorFrontRight.setPower(frontRightPower);
+            motorBackRight.setPower(backRightPower);
         }
     }
 }
