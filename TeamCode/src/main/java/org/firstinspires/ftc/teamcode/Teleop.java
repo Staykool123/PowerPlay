@@ -12,10 +12,10 @@ import org.firstinspires.ftc.teamcode.subsystems.EncoderSlider;
 public class Teleop extends OpMode {
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;
     private Servo leftclaw, rightclaw;
-    public static final double open1 = 0;
-    public static final double close1 = 0.45;
+    public static final double open1 = 0.45;
     public static final double open2 = 0.45;
-    public static final double close2 = 0;
+    public static final double close1 = 0.15;
+    public static final double close2 = 0.15;
 
     @Override
     public void init() {
@@ -39,22 +39,24 @@ public class Teleop extends OpMode {
 
     @Override
     public void loop() {
-        double drive;
-        double strafe;
-        double turn;
-        drive = -gamepad1.left_stick_y;
-        strafe = gamepad1.left_stick_x;
-        turn = gamepad1.right_stick_x;
+        double turn = gamepad1.left_stick_x * .75;
+        double drive = -gamepad1.right_stick_x * .75;
+        double strafe = -gamepad1.right_stick_y;
+        double liftUp = gamepad1.right_trigger;
+        double liftDown = gamepad1.left_trigger;
 
-        double frontLeftPower = Range.clip(drive + strafe + turn, -1.0, 1.0);
-        double backLeftPower = Range.clip(drive - strafe + turn, -1.0, 1.0);
-        double frontRightPower = Range.clip(drive - strafe - turn, -1.0, 1.0);
-        double backRightPower = Range.clip(drive + strafe - turn, -1.0, 1.0);
+        double frontLeftPower = Range.clip(turn - drive + strafe, -0.7, 0.7);
+        double frontRightPower = Range.clip(turn - drive - strafe, -0.7, 0.7);
+        double backLeftPower = Range.clip(turn + drive + strafe, -0.7, 0.7);
+        double backRightPower = Range.clip(-turn - drive + strafe, -0.7, 0.7);
+        double liftDrivePower = Range.clip(liftUp - liftDown, -1.0, 1.0);
+
 
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
+        liftDrive.setPower(liftDrivePower);
 
         if (gamepad1.x){
             leftclaw.setPosition(open1);
@@ -64,15 +66,7 @@ public class Teleop extends OpMode {
             leftclaw.setPosition(close1);
             rightclaw.setPosition(close2);
         }
-        if (gamepad1.dpad_up) {
-            liftDrive.setPower(1.0);
-        }
-        if (gamepad1.dpad_down) {
-            liftDrive.setPower(-1.0);
-        }
-        if (!gamepad1.dpad_down && !gamepad1.dpad_up) {
-            liftDrive.setPower(0.0);
-        }
+
 
             telemetry.addData("Motors", "frontLeft (%.2f), frontRight (%.2f), backLeft (%.2f), backRight(%.2f)",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
