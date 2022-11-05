@@ -7,14 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp
 public class MecanumDrive extends OpMode {
 
 
     private DcMotorEx frontLeft, frontRight, backLeft, backRight;
-
-
-    @Override
 
 
     public void init() {
@@ -35,7 +31,6 @@ public class MecanumDrive extends OpMode {
 
     }
 
-    @Override
     public void loop() {
         double drive = gamepad1.left_stick_x * .75;
         double strafe = -gamepad1.right_stick_x * 1.1;

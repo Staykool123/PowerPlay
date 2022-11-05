@@ -63,34 +63,35 @@ public class BlueRight extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-
-
+        runtime.reset();
         frontLeft.setPower(FORWARD_SPEED);
         frontRight.setPower(BACKWARD_SPEED);
         backLeft.setPower(BACKWARD_SPEED);
         backRight.setPower(FORWARD_SPEED);
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        frontLeft.setPower(FORWARD_SPEED);
-        frontRight.setPower(FORWARD_SPEED);
-        backLeft.setPower(FORWARD_SPEED);
-        backRight.setPower(FORWARD_SPEED);
-        runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        runtime.reset();
+        frontLeft.setPower(FORWARD_SPEED);
+        frontRight.setPower(FORWARD_SPEED);
+        backLeft.setPower(FORWARD_SPEED);
+        backRight.setPower(FORWARD_SPEED);
+        while (opModeIsActive() && (runtime.seconds() < .75)) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        runtime.reset();
         frontLeft.setPower(0);
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
         liftDrive.setPower(FORWARD_SPEED);
-        while (opModeIsActive() && (runtime.seconds() < 5)) {
+        while (opModeIsActive() && (runtime.seconds() < 7)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        runtime.reset();
         liftDrive.setPower(0);
         leftclaw.setPosition(open1);
         rightclaw.setPosition(open2);
@@ -98,26 +99,33 @@ public class BlueRight extends LinearOpMode {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        runtime.reset();
         frontLeft.setPower(BACKWARD_SPEED);
         frontRight.setPower(BACKWARD_SPEED);
         backLeft.setPower(BACKWARD_SPEED);
         backRight.setPower(BACKWARD_SPEED);
-        while (opModeIsActive() && (runtime.seconds() < 2)) {
+        while (opModeIsActive() && (runtime.seconds() < .75)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        runtime.reset();
         frontLeft.setPower(FORWARD_SPEED);
         frontRight.setPower(BACKWARD_SPEED);
         backLeft.setPower(BACKWARD_SPEED);
         backRight.setPower(FORWARD_SPEED);
-        while (opModeIsActive() && (runtime.seconds() < 4)) {
+        while (opModeIsActive() && (runtime.seconds() < 3)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        runtime.reset();
         backLeft.setPower(0);
         backRight.setPower(0);
         frontRight.setPower(0);
         frontLeft.setPower(0);
+        while (opModeIsActive() && (runtime.seconds() < 100)) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
