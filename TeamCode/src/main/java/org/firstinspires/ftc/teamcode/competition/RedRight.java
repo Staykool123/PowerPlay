@@ -36,7 +36,7 @@ public class RedRight extends LinearOpMode {
         backLeft.setPower(FORWARD_SPEED);
         backRight.setPower(BACKWARD_SPEED); // strafe
         runtime.reset();
-        while (opModeIsActive() && (runtime.milliseconds() < 900)) {
+        while (opModeIsActive() && (runtime.milliseconds() < 1050)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -45,7 +45,7 @@ public class RedRight extends LinearOpMode {
         backLeft.setPower(FORWARD_SPEED);
         backRight.setPower(FORWARD_SPEED); //move forward
         runtime.reset();
-        while (opModeIsActive() && (runtime.milliseconds() < 400)) {
+        while (opModeIsActive() && (runtime.milliseconds() < 325)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -55,13 +55,37 @@ public class RedRight extends LinearOpMode {
         backRight.setPower(0);
         liftDrive.setPower(FORWARD_SPEED); //stop driving and move lift
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 5)) {
+        while (opModeIsActive() && (runtime.seconds() < 8)) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        frontLeft.setPower(BACKWARD_SPEED);
+        frontRight.setPower(FORWARD_SPEED);
+        backLeft.setPower(FORWARD_SPEED);
+        backRight.setPower(BACKWARD_SPEED);
+        liftDrive.setPower(FORWARD_SPEED); //stop driving and move lift
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < .3)) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        liftDrive.setPower(FORWARD_SPEED); //stop driving and move lift
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < .5)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
         liftDrive.setPower(0); //stop lift and open claw
         leftclaw.setPosition(open);
         rightclaw.setPosition(open);
+        while (opModeIsActive() && (runtime.seconds() < 2.5)) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
         frontLeft.setPower(BACKWARD_SPEED); //go backwards
         frontRight.setPower(BACKWARD_SPEED);
         backLeft.setPower(BACKWARD_SPEED);
