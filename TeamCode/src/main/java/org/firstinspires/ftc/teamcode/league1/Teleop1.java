@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode.competition;
+package org.firstinspires.ftc.teamcode.league1;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.subsystems.EncoderSlider;
 
-@TeleOp(name = "Teleop")
-public class Teleop extends OpMode {
+@TeleOp
+@Disabled
+public class Teleop1 extends OpMode {
         private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;
         private Servo leftclaw, rightclaw;
         public static final double open1 = 0.45;

@@ -1,13 +1,15 @@
-package org.firstinspires.ftc.teamcode.competition;
+package org.firstinspires.ftc.teamcode.league1;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-@Autonomous(name="BlueRight")
-public class BlueRight extends LinearOpMode {
+@Autonomous
+@Disabled
+public class BlueRight1 extends LinearOpMode {
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;
     private Servo leftclaw, rightclaw;
     private ElapsedTime     runtime = new ElapsedTime();
