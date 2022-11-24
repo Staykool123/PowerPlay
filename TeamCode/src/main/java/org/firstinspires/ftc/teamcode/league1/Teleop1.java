@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
-@Disabled
 public class Teleop1 extends OpMode {
         private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;
         private Servo leftclaw, rightclaw;

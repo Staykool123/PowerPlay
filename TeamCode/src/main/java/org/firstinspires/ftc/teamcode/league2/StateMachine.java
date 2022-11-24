@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.subsystems;
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+package org.firstinspires.ftc.teamcode.league2;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -26,6 +25,7 @@ public class StateMachine {
     public void init(){
         liftTimer.reset();
         lift = hwMap.get(DcMotorEx.class, "lift");
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void runLiftState() {
@@ -50,15 +50,15 @@ public class StateMachine {
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void ground(){
-        moveToTarget(0, 1);
+        moveToTarget(1, 0.4);
     }
     public void low(){
-        moveToTarget(100, 1);
+        moveToTarget(2500, 0.5);
     }
     public void medium(){
-        moveToTarget(200,1);
+        moveToTarget(4000,0.5);
     }
     public void high(){
-        moveToTarget(300,1);
+        moveToTarget(5900,0.5);
     }
 }

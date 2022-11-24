@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.league2;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -6,33 +6,34 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "StateMachineTeleopArmOnly")
-public class TeleopStateMachine extends OpMode {
-    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
-    private Servo leftclaw, rightclaw;
+@TeleOp
+public class Teleop extends OpMode {
     StateMachine stateMachine;
-    public static final double open1 = 0.45;
-    public static final double open2 = 0.45;
-    public static final double close1 = 0.15;
-    public static final double close2 = 0.15;
-
+    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
+    private Servo claw, rotator;
+    public static final double open = 0.2;
+    public static final double close = 0.35;
+    public static final double normal = 1;
+    public static final double mid = 0.7;
+    public static final double back = 0.38;
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
 
+        stateMachine = new StateMachine(hardwareMap);
+        stateMachine.init();
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
+
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftclaw = hardwareMap.get(Servo.class, "leftclaw");
-        rightclaw = hardwareMap.get(Servo.class,"rightclaw");
+        claw = hardwareMap.get(Servo.class,"claw");
+        rotator = hardwareMap.get(Servo.class,"rotator");
 
-        stateMachine = new StateMachine(hardwareMap);
-        stateMachine.init();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -48,14 +49,10 @@ public class TeleopStateMachine extends OpMode {
         double driveSlow = -gamepad1.left_stick_x * .3;
         double strafeSlow = -gamepad1.left_stick_y * .3;
 
-        double liftUp = gamepad2.right_trigger;
-        double liftDown = gamepad2.left_trigger;
-
         double frontLeftPower = Range.clip(turnRight - turnLeft - drive + strafe - driveSlow + strafeSlow, -0.7, 0.7);
         double frontRightPower = Range.clip(turnRight - turnLeft - drive - strafe - driveSlow - strafeSlow, -0.7, 0.7);
         double backLeftPower = Range.clip(turnRight - turnLeft + drive + strafe + driveSlow + strafeSlow, -0.7, 0.7);
         double backRightPower = Range.clip(-turnRight + turnLeft - drive + strafe -driveSlow + strafeSlow, -0.7, 0.7);
-        double liftDrivePower = Range.clip(liftUp - liftDown, -1.0, 1.0);
 
 
         frontLeft.setPower(frontLeftPower);
@@ -63,11 +60,26 @@ public class TeleopStateMachine extends OpMode {
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
 
-        if(gamepad2.dpad_down){
+        if (gamepad2.dpad_left){
+            rotator.setPosition(mid);
+        }
+        if (gamepad2.dpad_down){
+            rotator.setPosition(back);
+        }
+        if (gamepad2.dpad_up){
+            rotator.setPosition(normal);
+        }
+        if (gamepad2.right_bumper){
+            claw.setPosition(open);
+        }
+        if (gamepad2.left_bumper) {
+            claw.setPosition(close);
+        }
+        if(gamepad2.x){
             stateMachine.setLiftState(StateMachine.LiftState.GROUND);
             stateMachine.runLiftState();
         }
-        if(gamepad2.dpad_up){
+        if(gamepad2.y){
             stateMachine.setLiftState(StateMachine.LiftState.LOW);
             stateMachine.runLiftState();
         }
@@ -79,16 +91,6 @@ public class TeleopStateMachine extends OpMode {
             stateMachine.setLiftState(StateMachine.LiftState.HIGH);
             stateMachine.runLiftState();
         }
-
-        if (gamepad2.x){
-            leftclaw.setPosition(open1);
-            rightclaw.setPosition(open2);
-        }
-        if (gamepad2.y) {
-            leftclaw.setPosition(close1);
-            rightclaw.setPosition(close2);
-        }
-
         telemetry.addData("Motors", "frontLeft (%.2f), frontRight (%.2f), backLeft (%.2f), backRight(%.2f)",
                 frontLeftPower, frontRightPower, backLeftPower, backRightPower);
         telemetry.update();

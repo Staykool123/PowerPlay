@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode.league2;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.league2.CameraDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -13,15 +15,15 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@TeleOp
-public class BlueLeft extends LinearOpMode
+@Autonomous
+public class RedRight extends LinearOpMode
 {
-    private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;
+    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
     private ElapsedTime runtime = new ElapsedTime();
     static final double     FORWARD_SPEED = 0.7;
     static final double     BACKWARD_SPEED = -0.7;
     OpenCvCamera camera;
-    AprilTagDetectionPipelineTesting aprilTagDetectionPipeline;
+    CameraDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
 
@@ -53,7 +55,7 @@ public class BlueLeft extends LinearOpMode
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipelineTesting(tagsize, fx, fy, cx, cy);
+        aprilTagDetectionPipeline = new CameraDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -161,7 +163,7 @@ public class BlueLeft extends LinearOpMode
             backLeft.setPower(FORWARD_SPEED);
             backRight.setPower(BACKWARD_SPEED); // strafe left
             runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
+            while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
                 telemetry.addData("Yay", "1", runtime.seconds());
                 telemetry.update();
             }
@@ -289,115 +291,7 @@ public class BlueLeft extends LinearOpMode
 
 
         }else if(tagOfInterest.id == MIDDLE){ //middle
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // strafe left
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "1", runtime.seconds());
-                telemetry.update();
-            }
-            //rotater.setPosition(front);
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // forward and turn the claw
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "2", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop and lift
-            //lift.setPower(0.7);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 400)) {
-                telemetry.addData("Yay", "3", runtime.seconds());
-                telemetry.update();
-            }
-            //claw.setPosition(close); //close claw
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
-                telemetry.addData("Yay", "4", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // backward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 500)) {
-                telemetry.addData("Yay", "5", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // rotate 90 degrees clockwise
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
-                telemetry.addData("Yay", "6", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // forward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 100)) {
-                telemetry.addData("Yay", "7", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop and lift
-            //lift.setPower(0.7);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "8", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // strafe right
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "9", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // drop cone
-            //claw.setPosition(open);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 450)) {
-                telemetry.addData("Yay", "10", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // strafe right
-            //claw.setPosition(open);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "11", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // backward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "12", runtime.seconds());
-                telemetry.update();
-            }
+
             frontLeft.setPower(0);
             frontRight.setPower(0);
             backLeft.setPower(0);
@@ -413,115 +307,7 @@ public class BlueLeft extends LinearOpMode
 
 
         }else{ //right
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // strafe left
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "1", runtime.seconds());
-                telemetry.update();
-            }
-            //rotater.setPosition(front);
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // forward and turn the claw
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "2", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop and lift
-            //lift.setPower(0.7);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 400)) {
-                telemetry.addData("Yay", "3", runtime.seconds());
-                telemetry.update();
-            }
-            //claw.setPosition(close); //close claw
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
-                telemetry.addData("Yay", "4", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // backward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 500)) {
-                telemetry.addData("Yay", "5", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // rotate 90 degrees clockwise
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
-                telemetry.addData("Yay", "6", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // forward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 100)) {
-                telemetry.addData("Yay", "7", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop and lift
-            //lift.setPower(0.7);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "8", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // strafe right
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "9", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // drop cone
-            //claw.setPosition(open);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 450)) {
-                telemetry.addData("Yay", "10", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // strafe right
-            //claw.setPosition(open);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "11", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // backward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "12", runtime.seconds());
-                telemetry.update();
-            }
+
             frontLeft.setPower(FORWARD_SPEED);
             frontRight.setPower(BACKWARD_SPEED);
             backLeft.setPower(FORWARD_SPEED);
