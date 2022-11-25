@@ -14,7 +14,10 @@ public class StateMachine {
         GROUND,
         HIGH,
         MEDIUM,
-        LOW
+        LOW,
+        DEFAULT,
+        DEFAULT2,
+        STOP
     }
     public void setLiftState(LiftState state){
         this.liftState = state;
@@ -42,23 +45,46 @@ public class StateMachine {
             case HIGH:
                 high();
                 break;
+            case DEFAULT:
+                abc();
+                break;
+            case DEFAULT2:
+                zyx();
+                break;
+            case STOP:
+                stop();
+                break;
         }
     }
     public void moveToTarget(int target, double power) {
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setPower(power);
         lift.setTargetPosition(target);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void ground(){
-        moveToTarget(1, 0.4);
+        moveToTarget(1, 0.7);
+    }
+    public void abc(){
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setPower(0.7);
+    }
+    public void zyx(){
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setPower(-0.7);
+    }
+    public void stop(){
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setPower(0);
     }
     public void low(){
-        moveToTarget(2500, 0.5);
+        moveToTarget(2400, 0.73);
     }
     public void medium(){
-        moveToTarget(4000,0.5);
+        moveToTarget(4000,0.73);
     }
     public void high(){
-        moveToTarget(5900,0.5);
+        moveToTarget(5900,0.76);
     }
+
 }

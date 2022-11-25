@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.league2;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,7 +13,7 @@ public class Teleop extends OpMode {
     private DcMotorEx frontLeft, frontRight, backLeft, backRight;
     private Servo claw, rotator;
     public static final double open = 0.2;
-    public static final double close = 0.35;
+    public static final double close = 0.38;
     public static final double normal = 1;
     public static final double mid = 0.7;
     public static final double back = 0.38;
@@ -54,6 +55,18 @@ public class Teleop extends OpMode {
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
 
+        if (gamepad2.x){
+            stateMachine.setLiftState(StateMachine.LiftState.DEFAULT);
+            stateMachine.runLiftState();
+        }
+        else if (gamepad2.y){
+            stateMachine.setLiftState(StateMachine.LiftState.DEFAULT2);
+            stateMachine.runLiftState();
+        }
+       else{
+            stateMachine.setLiftState(StateMachine.LiftState.STOP);
+            stateMachine.runLiftState();
+        }
         if (gamepad2.dpad_left){
             rotator.setPosition(mid);
         }
@@ -69,22 +82,23 @@ public class Teleop extends OpMode {
         if (gamepad2.left_bumper) {
             claw.setPosition(close);
         }
-        if(gamepad2.x){
-            stateMachine.setLiftState(StateMachine.LiftState.GROUND);
-            stateMachine.runLiftState();
-        }
-        if(gamepad2.y){
-            stateMachine.setLiftState(StateMachine.LiftState.LOW);
-            stateMachine.runLiftState();
-        }
-        if(gamepad2.a){
-            stateMachine.setLiftState(StateMachine.LiftState.MEDIUM);
-            stateMachine.runLiftState();
-        }
-        if(gamepad2.b){
-            stateMachine.setLiftState(StateMachine.LiftState.HIGH);
-            stateMachine.runLiftState();
-        }
+//        if(gamepad2.x){
+//            stateMachine.setLiftState(StateMachine.LiftState.GROUND);
+//            stateMachine.runLiftState();
+//        }
+//        if(gamepad2.y){
+//            stateMachine.setLiftState(StateMachine.LiftState.LOW);
+//            stateMachine.runLiftState();
+//        }
+//        if(gamepad2.a){
+//            stateMachine.setLiftState(StateMachine.LiftState.MEDIUM);
+//            stateMachine.runLiftState();
+//        }
+//        if(gamepad2.b){
+//            stateMachine.setLiftState(StateMachine.LiftState.HIGH);
+//            stateMachine.runLiftState();
+//        }
+
         telemetry.addData("Motors", "frontLeft (%.2f), frontRight (%.2f), backLeft (%.2f), backRight(%.2f)",
                 frontLeftPower, frontRightPower, backLeftPower, backRightPower);
         telemetry.update();
