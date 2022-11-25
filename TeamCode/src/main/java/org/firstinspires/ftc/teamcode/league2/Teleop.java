@@ -34,26 +34,20 @@ public class Teleop extends OpMode {
         claw = hardwareMap.get(Servo.class,"claw");
         rotator = hardwareMap.get(Servo.class,"rotator");
 
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        double turnRight = gamepad1.right_trigger * .75;
-        double turnLeft = gamepad1.left_trigger * .75;
-        double drive = -gamepad1.right_stick_x * .75;
-        double strafe = -gamepad1.right_stick_y;
+        double drive = gamepad1.left_stick_y * .7;
+        double strafe = -gamepad1.left_stick_x * .7;
+        double turn = -gamepad1.right_stick_x;
 
-        double driveSlow = -gamepad1.left_stick_x * .3;
-        double strafeSlow = -gamepad1.left_stick_y * .3;
-
-        double frontLeftPower = Range.clip(turnRight - turnLeft - drive + strafe - driveSlow + strafeSlow, -0.7, 0.7);
-        double frontRightPower = Range.clip(turnRight - turnLeft - drive - strafe - driveSlow - strafeSlow, -0.7, 0.7);
-        double backLeftPower = Range.clip(turnRight - turnLeft + drive + strafe + driveSlow + strafeSlow, -0.7, 0.7);
-        double backRightPower = Range.clip(-turnRight + turnLeft - drive + strafe -driveSlow + strafeSlow, -0.7, 0.7);
-
+        double frontLeftPower = Range.clip(drive + strafe + turn, -0.7, 0.7);
+        double frontRightPower = Range.clip(drive - strafe - turn, -0.7, 0.7);
+        double backLeftPower = Range.clip(drive - strafe + turn, -0.7, 0.7);
+        double backRightPower = Range.clip(drive + strafe - turn, -0.7, 0.7);
 
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
