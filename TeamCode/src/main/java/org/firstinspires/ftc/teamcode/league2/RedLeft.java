@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.league2.CameraDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
@@ -16,13 +16,20 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous
+@Autonomous //change back to teleop of no work
 public class RedLeft extends LinearOpMode
 {
+    //    StateMachine stateMachine;
+//    private Servo claw, rotator;
+//    public static final double open = 0.2;
+//    public static final double close = 0.35;
+//    public static final double normal = 1;
+//    public static final double mid = 0.7;
+//    public static final double back = 0.38;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight;
     private ElapsedTime runtime = new ElapsedTime();
-    static final double     FORWARD_SPEED = 0.7;
-    static final double     BACKWARD_SPEED = -0.7;
+    static final double     FORWARD_SPEED = 0.4;
+    static final double     BACKWARD_SPEED = -0.4;
     OpenCvCamera camera;
     CameraDetectionPipeline aprilTagDetectionPipeline;
 
@@ -50,10 +57,14 @@ public class RedLeft extends LinearOpMode
     @Override
     public void runOpMode()
     {
+//        stateMachine = new StateMachine(hardwareMap);
+//        stateMachine.init();
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
+//        claw = hardwareMap.get(Servo.class,"claw");
+//        rotator = hardwareMap.get(Servo.class,"rotator");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new CameraDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -158,123 +169,52 @@ public class RedLeft extends LinearOpMode
         }
 
         /* Actually do something useful */
+
+        //frontright and backright powers are inverted
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // strafe left
+            frontLeft.setPower(-0.4);
+            frontRight.setPower(-0.4);
+            backLeft.setPower(0.4);
+            backRight.setPower(0.4); // strafe left
             runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
+            while (opModeIsActive() && (runtime.milliseconds() < 2000)) {
                 telemetry.addData("Yay", "1", runtime.seconds());
                 telemetry.update();
             }
-            //rotater.setPosition(front);
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // forward and turn the claw
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0); // stop
             runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
+            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
                 telemetry.addData("Yay", "2", runtime.seconds());
                 telemetry.update();
             }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop and lift
-            //lift.setPower(0.7);
+            frontLeft.setPower(0.4);
+            frontRight.setPower(0.4);
+            backLeft.setPower(-0.4);
+            backRight.setPower(-0.4); // strafe right
             runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 400)) {
+            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
                 telemetry.addData("Yay", "3", runtime.seconds());
                 telemetry.update();
             }
-            //claw.setPosition(close); //close claw
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0); // stop
+            runtime.reset();
+            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
                 telemetry.addData("Yay", "4", runtime.seconds());
                 telemetry.update();
             }
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // backward
+            frontLeft.setPower(-0.4);
+            frontRight.setPower(0.4);
+            backLeft.setPower(-0.4);
+            backRight.setPower(0.4); // move forward
             runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 500)) {
+            while (opModeIsActive() && (runtime.milliseconds() < 850)) {
                 telemetry.addData("Yay", "5", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // rotate 90 degrees clockwise
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
-                telemetry.addData("Yay", "6", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // forward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 100)) {
-                telemetry.addData("Yay", "7", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop and lift
-            //lift.setPower(0.7);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "8", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // strafe right
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "9", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // drop cone
-            //claw.setPosition(open);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 450)) {
-                telemetry.addData("Yay", "10", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // strafe right
-            //claw.setPosition(open);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 200)) {
-                telemetry.addData("Yay", "11", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // backward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1000)) {
-                telemetry.addData("Yay", "12", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(BACKWARD_SPEED);
-            frontRight.setPower(FORWARD_SPEED);
-            backLeft.setPower(BACKWARD_SPEED);
-            backRight.setPower(FORWARD_SPEED); // strafe left
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 450)) {
-                telemetry.addData("Yay", "13", runtime.seconds());
                 telemetry.update();
             }
             frontLeft.setPower(0);
@@ -283,7 +223,7 @@ public class RedLeft extends LinearOpMode
             backRight.setPower(0); // stop
             runtime.reset();
             while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
-                telemetry.addData("Yay", "14", runtime.seconds());
+                telemetry.addData("Yay", "6", runtime.seconds());
                 telemetry.update();
             }
 
@@ -292,14 +232,22 @@ public class RedLeft extends LinearOpMode
 
 
         }else if(tagOfInterest.id == MIDDLE){ //middle
-
+            frontLeft.setPower(-0.4);
+            frontRight.setPower(-0.4);
+            backLeft.setPower(0.4);
+            backRight.setPower(0.4); // strafe left
+            runtime.reset();
+            while (opModeIsActive() && (runtime.milliseconds() < 1600)) {
+                telemetry.addData("Yay", "1", runtime.seconds());
+                telemetry.update();
+            }
             frontLeft.setPower(0);
             frontRight.setPower(0);
             backLeft.setPower(0);
             backRight.setPower(0); // stop
             runtime.reset();
             while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
-                telemetry.addData("Yay", "13", runtime.seconds());
+                telemetry.addData("Yay", "2", runtime.seconds());
                 telemetry.update();
             }
 
@@ -308,14 +256,49 @@ public class RedLeft extends LinearOpMode
 
 
         }else{ //right
-
-            frontLeft.setPower(FORWARD_SPEED);
-            frontRight.setPower(BACKWARD_SPEED);
-            backLeft.setPower(FORWARD_SPEED);
-            backRight.setPower(BACKWARD_SPEED); // strafe right
+            frontLeft.setPower(-0.4);
+            frontRight.setPower(-0.4);
+            backLeft.setPower(0.4);
+            backRight.setPower(0.4); // strafe left
             runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 450)) {
-                telemetry.addData("Yay", "13", runtime.seconds());
+            while (opModeIsActive() && (runtime.milliseconds() < 2000)) {
+                telemetry.addData("Yay", "1", runtime.seconds());
+                telemetry.update();
+            }
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0); // stop
+            runtime.reset();
+            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
+                telemetry.addData("Yay", "2", runtime.seconds());
+                telemetry.update();
+            }
+            frontLeft.setPower(0.4);
+            frontRight.setPower(0.4);
+            backLeft.setPower(-0.4);
+            backRight.setPower(-0.4); // strafe right
+            runtime.reset();
+            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
+                telemetry.addData("Yay", "3", runtime.seconds());
+                telemetry.update();
+            }
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0); // stop
+            runtime.reset();
+            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
+                telemetry.addData("Yay", "4", runtime.seconds());
+                telemetry.update();
+            }
+            frontLeft.setPower(0.4);
+            frontRight.setPower(-0.4);
+            backLeft.setPower(0.4);
+            backRight.setPower(-0.4); // move forward
+            runtime.reset();
+            while (opModeIsActive() && (runtime.milliseconds() < 925)) {
+                telemetry.addData("Yay", "5", runtime.seconds());
                 telemetry.update();
             }
             frontLeft.setPower(0);
@@ -324,7 +307,7 @@ public class RedLeft extends LinearOpMode
             backRight.setPower(0); // stop
             runtime.reset();
             while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
-                telemetry.addData("Yay", "14", runtime.seconds());
+                telemetry.addData("Yay", "6", runtime.seconds());
                 telemetry.update();
             }
         }

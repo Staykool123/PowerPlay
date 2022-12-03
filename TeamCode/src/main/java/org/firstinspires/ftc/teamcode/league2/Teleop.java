@@ -14,8 +14,8 @@ public class Teleop extends OpMode {
     private Servo claw, rotator;
     boolean aButtonPreviousState = false;
     boolean slowModeActive = false;
-    public static final double open = 0.2;
-    public static final double close = 0.38;
+    public static final double open = 0.1;
+    public static final double close = 0.23;
     public static final double normal = 1;
     public static final double mid = 0.7;
     public static final double back = 0.38;
@@ -110,13 +110,19 @@ public class Teleop extends OpMode {
             stateMachine.setLiftState(StateMachine.LiftState.HIGH);
             stateMachine.runLiftState();
         }
-        if(gamepad2.dpad_right){
-            stateMachine.setLiftState(StateMachine.LiftState.STACK);
+
+        if (gamepad2.dpad_right){
+            stateMachine.setLiftState(StateMachine.LiftState.STACK2);
             stateMachine.runLiftState();
         }
-
-
-
-
+        if (gamepad1.x) {
+            rotator.setPosition(rotator.getPosition() + 0.0005);
+        }
+        if(gamepad1.y) {
+            rotator.setPosition(rotator.getPosition()-0.0005);
+        }
+    }
+    public void stop(){
+        stateMachine.init();
     }
 }

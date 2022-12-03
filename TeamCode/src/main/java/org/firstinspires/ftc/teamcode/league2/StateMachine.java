@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class StateMachine {
-
     protected HardwareMap hwMap;
     public StateMachine (HardwareMap hwMap){
         this.hwMap = hwMap;
@@ -18,13 +17,13 @@ public class StateMachine {
         HIGH,
         MEDIUM,
         LOW,
-        STACK
-
+        STACK,
+        STACK2
     }
     public void setLiftState(LiftState state){
         this.liftState = state;
     }
-    LiftState liftState = LiftState.GROUND;
+    private LiftState liftState;
     public DcMotor lift;
     ElapsedTime liftTimer = new ElapsedTime();
     public void init(){
@@ -32,6 +31,7 @@ public class StateMachine {
         lift = hwMap.get(DcMotorEx.class, "lift");
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftState = LiftState.GROUND;
 
     }
     public void runLiftState(){
@@ -51,6 +51,9 @@ public class StateMachine {
             case STACK:
                 stack();
                 break;
+            case STACK2:
+                stackDecrease();
+                break;
         }
     }
     public void moveToTarget(int target, double power){
@@ -59,19 +62,21 @@ public class StateMachine {
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void ground(){
-        moveToTarget(1, 0.7);
+        moveToTarget(1, 0.9);
     }
     public void low(){
-        moveToTarget(2100, 0.73);
+        moveToTarget(2100, 0.9);
     }
     public void medium(){
-        moveToTarget(4000,0.73);
+        moveToTarget(4000,.9);
     }
     public void high(){
-        moveToTarget(5900,0.76);
+        moveToTarget(5900,0.9);
+    }
+    public void stackDecrease(){
+        moveToTarget(lift.getCurrentPosition() - 200,1);
     }
     public void stack(){
-        moveToTarget(lift.getCurrentPosition() - 200,0.3);
+        moveToTarget(1000, 0.9);
     }
-
 }
