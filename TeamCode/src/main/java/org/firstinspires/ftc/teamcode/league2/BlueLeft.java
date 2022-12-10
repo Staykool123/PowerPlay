@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @Autonomous //change back to teleop of no work
 public class BlueLeft extends LinearOpMode
 {
-//    StateMachine stateMachine;
+    //    StateMachine stateMachine;
 //    private Servo claw, rotator;
 //    public static final double open = 0.2;
 //    public static final double close = 0.35;
