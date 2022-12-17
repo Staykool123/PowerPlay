@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
@@ -17,8 +18,11 @@ public class Teleop extends OpMode {
     public static final double open = 0.1;
     public static final double close = 0.265;
     public static final double normal = 1;
-    public static final double mid = 0.7;
-    public static final double back = 0.38;
+    //    public static final double mid = 0.7;
+    public static final double back = 0.335;
+    boolean call = true;
+    boolean call1 = true;
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void init() {
@@ -37,7 +41,8 @@ public class Teleop extends OpMode {
 
         claw = hardwareMap.get(Servo.class,"claw");
         rotator = hardwareMap.get(Servo.class,"rotator");
-
+        claw.setPosition(open);
+        rotator.setPosition(normal);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -79,21 +84,56 @@ public class Teleop extends OpMode {
         }
         aButtonPreviousState = gamepad1.a;
 
-        if (gamepad2.dpad_left){
-            rotator.setPosition(mid);
+//        if (gamepad2.dpad_left){
+//            rotator.setPosition(mid);
+//        }
+//        if (gamepad2.dpad_down){
+//            rotator.setPosition(back);
+//        }
+//        if (gamepad2.dpad_up){
+//            rotator.setPosition(normal);
+//        }
+//        if (gamepad2.right_bumper){
+////            claw.setPosition(open);
+////        }
+////        if (gamepad2.left_bumper) {
+////            claw.setPosition(close);
+////        }
+
+        if (gamepad2.left_bumper){
+            while(gamepad2.left_bumper) {
+            }
+            if(call){
+                rotator.setPosition(back);
+                call = false;
+                return;
+            }
+            else if(!call){
+                rotator.setPosition(normal);
+                call = true;
+                return;
+            }
         }
-        if (gamepad2.dpad_down){
-            rotator.setPosition(back);
+        if(gamepad2.right_bumper){
+            while(gamepad2.right_bumper){
+
+            }
+            if(call1){
+                claw.setPosition(close);
+                call1 = false;
+                return;
+            }
+            else if(!call1){
+                claw.setPosition(open);
+                call1 = true;
+                return;
+            }
         }
-        if (gamepad2.dpad_up){
-            rotator.setPosition(normal);
-        }
-        if (gamepad2.right_bumper){
-            claw.setPosition(open);
-        }
-        if (gamepad2.left_bumper) {
-            claw.setPosition(close);
-        }
+        telemetry.addData("rotator",rotator.getPosition());
+        telemetry.addData("claw",claw.getPosition());
+        telemetry.addData("call", call);
+        telemetry.addData("call1", call);
+        telemetry.update();
         if(gamepad2.x){
             stateMachine.setLiftState(StateMachine.LiftState.GROUND);
             stateMachine.runLiftState();
@@ -102,33 +142,32 @@ public class Teleop extends OpMode {
             stateMachine.setLiftState(StateMachine.LiftState.LOW);
             stateMachine.runLiftState();
         }
-        if(gamepad2.a){
+        if(gamepad2.b){
             stateMachine.setLiftState(StateMachine.LiftState.MEDIUM);
             stateMachine.runLiftState();
         }
-        if(gamepad2.b){
+        if(gamepad2.a){
             stateMachine.setLiftState(StateMachine.LiftState.HIGH);
             stateMachine.runLiftState();
         }
 
-        if (gamepad2.dpad_right){
-            stateMachine.setLiftState(StateMachine.LiftState.STACK2);
+        if (gamepad2.dpad_down){
+            stateMachine.setLiftState(StateMachine.LiftState.STACKDE);
             stateMachine.runLiftState();
         }
-        if(gamepad1.b){
+        if(gamepad2.dpad_up){
+            stateMachine.setLiftState(StateMachine.LiftState.STACKIN);
+            stateMachine.runLiftState();
+        }
+        if(gamepad2.dpad_left){
             stateMachine.setLiftState(StateMachine.LiftState.STACK);
             stateMachine.runLiftState();
         }
-        if (gamepad1.x) {
+        if (gamepad1.left_bumper) {
             rotator.setPosition(rotator.getPosition() + 0.0005);
         }
-        if(gamepad1.y) {
+        if(gamepad1.right_bumper) {
             rotator.setPosition(rotator.getPosition()-0.0005);
-        }
-        if(gamepad1.right_bumper && gamepad1.left_bumper){
-            stateMachine.setLiftState(StateMachine.LiftState.PANIC);
-            stateMachine.runLiftState();
-            claw.setPosition(open);
         }
     }
     public void stop(){

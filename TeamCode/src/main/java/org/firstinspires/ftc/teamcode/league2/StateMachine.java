@@ -17,8 +17,9 @@ public class StateMachine {
         HIGH,
         MEDIUM,
         LOW,
+        STACKIN,
+        STACKDE,
         STACK,
-        STACK2,
         PANIC
     }
     public void setLiftState(LiftState state){
@@ -49,11 +50,14 @@ public class StateMachine {
             case HIGH:
                 high();
                 break;
-            case STACK:
+            case STACKIN:
                 stackIncrease();
                 break;
-            case STACK2:
+            case STACKDE:
                 stackDecrease();
+                break;
+            case STACK:
+                stackoffi();
                 break;
             case PANIC:
                 panic();
@@ -75,13 +79,14 @@ public class StateMachine {
         moveToTarget(4000,.9);
     }
     public void high(){
-        moveToTarget(5600,0.9);
+        moveToTarget(5700,0.9);
     }
+    public void stackoffi(){moveToTarget(900,0.9);}
     public void stackDecrease(){
         moveToTarget(lift.getCurrentPosition() - 150,1);
     }
     public void stackIncrease(){
-        moveToTarget(lift.getCurrentPosition() + 50,1);
+        moveToTarget(lift.getCurrentPosition() + 100,1);
     }
     public void panic(){
         lift.setPower(0);
