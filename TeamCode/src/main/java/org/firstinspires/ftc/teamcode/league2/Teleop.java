@@ -59,8 +59,8 @@ public class Teleop extends OpMode {
 
             double frontLeftPower = Range.clip(drive + strafe + turn, -0.7, 0.7);
             double frontRightPower = Range.clip(drive - strafe - turn, -0.7, 0.7);
-            double backLeftPower = Range.clip(drive - strafe + turn, -0.7, 0.7);
-            double backRightPower = Range.clip(drive + strafe - turn, -0.7, 0.7);
+            double backLeftPower = Range.clip(-drive - strafe + turn, -0.7, 0.7);
+            double backRightPower = Range.clip(-drive + strafe - turn, -0.7, 0.7);
 
             frontLeft.setPower(frontLeftPower);
             frontRight.setPower(frontRightPower);
@@ -74,8 +74,8 @@ public class Teleop extends OpMode {
 
             double frontLeftPower = Range.clip(drive + strafe + turn, -0.7, 0.7);
             double frontRightPower = Range.clip(drive - strafe - turn, -0.7, 0.7);
-            double backLeftPower = Range.clip(drive - strafe + turn, -0.7, 0.7);
-            double backRightPower = Range.clip(drive + strafe - turn, -0.7, 0.7);
+            double backLeftPower = Range.clip(-drive - strafe + turn, -0.7, 0.7);
+            double backRightPower = Range.clip(-drive + strafe - turn, -0.7, 0.7);
 
             frontLeft.setPower(frontLeftPower);
             frontRight.setPower(frontRightPower);
