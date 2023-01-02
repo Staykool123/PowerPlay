@@ -84,23 +84,7 @@ public class Teleop extends OpMode {
         }
         aButtonPreviousState = gamepad1.a;
 
-//        if (gamepad2.dpad_left){
-//            rotator.setPosition(mid);
-//        }
-//        if (gamepad2.dpad_down){
-//            rotator.setPosition(back);
-//        }
-//        if (gamepad2.dpad_up){
-//            rotator.setPosition(normal);
-//        }
-//        if (gamepad2.right_bumper){
-////            claw.setPosition(open);
-////        }
-////        if (gamepad2.left_bumper) {
-////            claw.setPosition(close);
-////        }
-
-        if (gamepad2.left_bumper){
+  ;;       if (gamepad2.left_bumper){
             while(gamepad2.left_bumper) {
             }
             if(call){
