@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.league2;
+package org.firstinspires.ftc.teamcode.comp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -17,11 +16,13 @@ public class Teleop extends OpMode {
     boolean slowModeActive = false;
     public static final double open = 0.1;
     public static final double close = 0.265;
-    public static final double normal = 1;
+    public static final double normal = 0.96  ;
     //    public static final double mid = 0.7;
     public static final double back = 0.335;
     boolean call = true;
     boolean call1 = true;
+    boolean LPushed = false;
+    boolean RPushed = false;
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -59,8 +60,8 @@ public class Teleop extends OpMode {
 
             double frontLeftPower = Range.clip(drive + strafe + turn, -0.7, 0.7);
             double frontRightPower = Range.clip(drive - strafe - turn, -0.7, 0.7);
-            double backLeftPower = Range.clip(-drive - strafe + turn, -0.7, 0.7);
-            double backRightPower = Range.clip(-drive + strafe - turn, -0.7, 0.7);
+            double backLeftPower = Range.clip(drive - strafe + turn, -0.7, 0.7);
+            double backRightPower = Range.clip(drive + strafe - turn, -0.7, 0.7);
 
             frontLeft.setPower(frontLeftPower);
             frontRight.setPower(frontRightPower);
@@ -74,8 +75,8 @@ public class Teleop extends OpMode {
 
             double frontLeftPower = Range.clip(drive + strafe + turn, -0.7, 0.7);
             double frontRightPower = Range.clip(drive - strafe - turn, -0.7, 0.7);
-            double backLeftPower = Range.clip(-drive - strafe + turn, -0.7, 0.7);
-            double backRightPower = Range.clip(-drive + strafe - turn, -0.7, 0.7);
+            double backLeftPower = Range.clip(drive - strafe + turn, -0.7, 0.7);
+            double backRightPower = Range.clip(drive + strafe - turn, -0.7, 0.7);
 
             frontLeft.setPower(frontLeftPower);
             frontRight.setPower(frontRightPower);
@@ -84,9 +85,27 @@ public class Teleop extends OpMode {
         }
         aButtonPreviousState = gamepad1.a;
 
-  ;;       if (gamepad2.left_bumper){
-            while(gamepad2.left_bumper) {
-            }
+//        if (gamepad2.dpad_left){
+//            rotator.setPosition(mid);
+//        }
+//        if (gamepad2.dpad_down){
+//            rotator.setPosition(back);
+//        }
+//        if (gamepad2.dpad_up){
+//            rotator.setPosition(normal);
+//        }
+//        if (gamepad2.right_bumper){
+////            claw.setPosition(open);
+////        }
+////        if (gamepad2.left_bumper) {
+////            claw.setPosition(close);
+////        }
+
+        if (gamepad2.left_bumper) {
+            LPushed = true;
+        }
+        if (LPushed && !gamepad2.left_bumper) {
+            LPushed = false;
             if(call){
                 rotator.setPosition(back);
                 call = false;
@@ -98,21 +117,23 @@ public class Teleop extends OpMode {
                 return;
             }
         }
-        if(gamepad2.right_bumper){
-            while(gamepad2.right_bumper){
 
-            }
-            if(call1){
+        if(gamepad2.right_bumper) {
+            RPushed = true;
+        }
+        if(RPushed && !gamepad2.right_bumper) {
+            RPushed = false;
+            if (call1) {
                 claw.setPosition(close);
                 call1 = false;
                 return;
-            }
-            else if(!call1){
+            } else if (!call1) {
                 claw.setPosition(open);
                 call1 = true;
                 return;
             }
         }
+
         telemetry.addData("rotator",rotator.getPosition());
         telemetry.addData("claw",claw.getPosition());
         telemetry.addData("call", call);

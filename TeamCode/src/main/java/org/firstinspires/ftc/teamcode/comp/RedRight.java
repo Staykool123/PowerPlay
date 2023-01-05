@@ -1,14 +1,16 @@
-package org.firstinspires.ftc.teamcode.league2;
+package org.firstinspires.ftc.teamcode.comp;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.league2.CameraDetectionPipeline;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -17,7 +19,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous //change back to teleop of no work
-public class RedLeft extends LinearOpMode
+public class RedRight extends LinearOpMode
 {
     //    StateMachine stateMachine;
 //    private Servo claw, rotator;
@@ -57,12 +59,12 @@ public class RedLeft extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        Pose2d startPose = new Pose2d(-36, -64.5, 270);
+
+
 //        stateMachine = new StateMachine(hardwareMap);
 //        stateMachine.init();
-        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
-        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
-        backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 //        claw = hardwareMap.get(Servo.class,"claw");
 //        rotator = hardwareMap.get(Servo.class,"rotator");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -87,6 +89,34 @@ public class RedLeft extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
+        drive.setPoseEstimate(startPose);
+
+        TrajectorySequence generalSeq = drive.trajectorySequenceBuilder(startPose)
+                .lineTo(new Vector2d(-23,0))
+                //marker
+                .lineTo(new Vector2d(-30, -16))
+                .lineTo(new Vector2d(-52, -16))
+                //marker
+                .lineTo(new Vector2d(-30, -16))
+                .lineTo(new Vector2d(-23,0))
+                //marker
+                .lineTo(new Vector2d(-30, -16))
+                .lineTo(new Vector2d(-52, -16))
+                //marker
+                .lineTo(new Vector2d(-30, -16))
+                .lineTo(new Vector2d(-23,0))
+                //marker
+                .lineTo(new Vector2d(-34,-40))
+                //marker
+                .build();
+
+        Trajectory rightSeq = drive.trajectoryBuilder(generalSeq.end())
+                .forward(22)
+                .build();
+
+        Trajectory leftSeq = drive.trajectoryBuilder(generalSeq.end())
+                .back(22)
+                .build();
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
@@ -172,144 +202,15 @@ public class RedLeft extends LinearOpMode
 
         //frontright and backright powers are inverted
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
-            frontLeft.setPower(-0.4);
-            frontRight.setPower(-0.4);
-            backLeft.setPower(0.4);
-            backRight.setPower(0.4); // strafe left
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 2000)) {
-                telemetry.addData("Yay", "1", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
-                telemetry.addData("Yay", "2", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0.4);
-            frontRight.setPower(0.4);
-            backLeft.setPower(-0.4);
-            backRight.setPower(-0.4); // strafe right
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
-                telemetry.addData("Yay", "3", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
-                telemetry.addData("Yay", "4", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(-0.4);
-            frontRight.setPower(0.4);
-            backLeft.setPower(-0.4);
-            backRight.setPower(0.4); // move forward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 850)) {
-                telemetry.addData("Yay", "5", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
-                telemetry.addData("Yay", "6", runtime.seconds());
-                telemetry.update();
-            }
-
-
-
-
+            drive.followTrajectorySequence(generalSeq);
+            drive.followTrajectory(leftSeq);
 
         }else if(tagOfInterest.id == MIDDLE){ //middle
-            frontLeft.setPower(-0.4);
-            frontRight.setPower(-0.4);
-            backLeft.setPower(0.4);
-            backRight.setPower(0.4); // strafe left
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 1600)) {
-                telemetry.addData("Yay", "1", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
-                telemetry.addData("Yay", "2", runtime.seconds());
-                telemetry.update();
-            }
-
-
-
-
+            drive.followTrajectorySequence(generalSeq);
 
         }else{ //right
-            frontLeft.setPower(-0.4);
-            frontRight.setPower(-0.4);
-            backLeft.setPower(0.4);
-            backRight.setPower(0.4); // strafe left
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 2000)) {
-                telemetry.addData("Yay", "1", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
-                telemetry.addData("Yay", "2", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0.4);
-            frontRight.setPower(0.4);
-            backLeft.setPower(-0.4);
-            backRight.setPower(-0.4); // strafe right
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 300)) {
-                telemetry.addData("Yay", "3", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 350)) {
-                telemetry.addData("Yay", "4", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0.4);
-            frontRight.setPower(-0.4);
-            backLeft.setPower(0.4);
-            backRight.setPower(-0.4); // move forward
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 925)) {
-                telemetry.addData("Yay", "5", runtime.seconds());
-                telemetry.update();
-            }
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0); // stop
-            runtime.reset();
-            while (opModeIsActive() && (runtime.milliseconds() < 10000)) {
-                telemetry.addData("Yay", "6", runtime.seconds());
-                telemetry.update();
-            }
+            drive.followTrajectorySequence(generalSeq);
+            drive.followTrajectory(rightSeq);
         }
 
 

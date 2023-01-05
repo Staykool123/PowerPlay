@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode.league2;
-import android.os.SystemClock;
+package org.firstinspires.ftc.teamcode.comp;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -70,7 +69,7 @@ public class StateMachine {
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void ground(){
-        moveToTarget(1, 0.9);
+        moveToTarget(1, 1);
     }
     public void low(){
         moveToTarget(2300, 0.9);
@@ -79,7 +78,7 @@ public class StateMachine {
         moveToTarget(4000,.9);
     }
     public void high(){
-        moveToTarget(5700,0.9);
+        moveToTarget(5700,1);
     }
     public void stackoffi(){moveToTarget(900,0.9);}
     public void stackDecrease(){
