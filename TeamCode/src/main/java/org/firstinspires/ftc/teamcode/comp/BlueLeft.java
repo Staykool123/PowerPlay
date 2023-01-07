@@ -6,9 +6,11 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
@@ -28,10 +30,8 @@ public class BlueLeft extends LinearOpMode
 //    public static final double normal = 1;
 //    public static final double mid = 0.7;
 //    public static final double back = 0.38;
-    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
-    private ElapsedTime runtime = new ElapsedTime();
-    static final double     FORWARD_SPEED = 0.4;
-    static final double     BACKWARD_SPEED = -0.4;
+    private Servo claw, rotator;
+    private DcMotorEx lift;
     OpenCvCamera camera;
     CameraDetectionPipeline aprilTagDetectionPipeline;
 
@@ -59,14 +59,9 @@ public class BlueLeft extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d startPose = new Pose2d(-36, -64.5, 270);
-
-
-//        stateMachine = new StateMachine(hardwareMap);
-//        stateMachine.init();
-//        claw = hardwareMap.get(Servo.class,"claw");
-//        rotator = hardwareMap.get(Servo.class,"rotator");
+        claw = hardwareMap.get(Servo.class,"claw");
+        rotator = hardwareMap.get(Servo.class,"rotator");
+        lift = hardwareMap.get(DcMotorEx.class,"lift");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new CameraDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -89,10 +84,19 @@ public class BlueLeft extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        Pose2d startPose = new Pose2d(-36, -64.5, 270);
         drive.setPoseEstimate(startPose);
 
         Trajectory grabSeq = drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
-                .splineTo(new Vector2d(-50.5,-8), Math.toRadians(180))
+                .addTemporalMarker(0, () -> {
+                    rotator.setPosition(0.335);
+                    lift.setPower(1.0);
+                })
+                .addTemporalMarker(2, () -> {
+                    lift.setPower(0);
+                })
+                .splineTo(new Vector2d(-50.5,-11), Math.toRadians(180))
                 .build();
 
         Trajectory grabSeq2= drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
@@ -107,9 +111,40 @@ public class BlueLeft extends LinearOpMode
                 .splineTo(new Vector2d(-14,-5), Math.toRadians(0))
                 .build();
 
+        TrajectorySequence dropSeq = drive.trajectorySequenceBuilder(new Pose2d())
+                .forward(0.001)
+                .addTemporalMarker(0, () -> {
+                    lift.setPower(1.0);
+                    rotator.setPosition(0.96);
+                })
+                .addTemporalMarker(0.5, () -> {
+                    claw.setPosition(0.1);
+                    lift.setPower(0);
+                })
+                .build();
+
+        TrajectorySequence actualGrabSeq = drive.trajectorySequenceBuilder(new Pose2d())
+                .forward(1.5)
+                .addTemporalMarker(0.5, () -> {
+                    claw.setPosition(.265);
+                })
+                .build();
+
         TrajectorySequence startSeq = drive.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(-17.5,0))
+                .addDisplacementMarker(() -> {
+                    lift.setPower(-1.0);
+                    claw.setPosition(0.265);
+                })
+                .lineTo(
+                        new Vector2d(-17.5,5),
+                        SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                )
                 .forward(4)
+                .addDisplacementMarker(() -> {
+                    lift.setPower(0);
+                })
+
                 .build();
 
         TrajectorySequence backSeq = drive.trajectorySequenceBuilder(deliverSeq2.end())
@@ -129,6 +164,7 @@ public class BlueLeft extends LinearOpMode
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
+        claw.setPosition(0.265);
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -211,7 +247,9 @@ public class BlueLeft extends LinearOpMode
         //frontright and backright powers are inverted
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
             drive.followTrajectorySequence(startSeq);
+            drive.followTrajectorySequence(dropSeq);
             drive.followTrajectory(grabSeq);
+            drive.followTrajectorySequence(actualGrabSeq);
             drive.followTrajectory(deliverSeq);
             drive.followTrajectory(grabSeq2);
             drive.followTrajectory(deliverSeq2);
