@@ -91,30 +91,38 @@ public class BlueLeft extends LinearOpMode
 
         drive.setPoseEstimate(startPose);
 
-        TrajectorySequence generalSeq = drive.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(-23,0))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-52, -16))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-23,0))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-52, -16))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-23,0))
-                //marker
-                .lineTo(new Vector2d(-34,-40))
-                //marker
+        Trajectory grabSeq = drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
+                .splineTo(new Vector2d(-50.5,-8), Math.toRadians(180))
                 .build();
 
-        Trajectory rightSeq = drive.trajectoryBuilder(generalSeq.end())
+        Trajectory grabSeq2= drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
+                .splineTo(new Vector2d(-51.5,-5), Math.toRadians(180))
+                .build();
+
+        Trajectory deliverSeq = drive.trajectoryBuilder(grabSeq.end())
+                .splineTo(new Vector2d(-15,-4), Math.toRadians(0))
+                .build();
+
+        Trajectory deliverSeq2 = drive.trajectoryBuilder(grabSeq.end())
+                .splineTo(new Vector2d(-14,-5), Math.toRadians(0))
+                .build();
+
+        TrajectorySequence startSeq = drive.trajectorySequenceBuilder(startPose)
+                .lineTo(new Vector2d(-17.5,0))
+                .forward(4)
+                .build();
+
+        TrajectorySequence backSeq = drive.trajectorySequenceBuilder(deliverSeq2.end())
+                .back(7)
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(-30,-40,270))
+                .build();
+
+        Trajectory rightSeq = drive.trajectoryBuilder(new Pose2d(-30,-40,270))
                 .forward(22)
                 .build();
 
-        Trajectory leftSeq = drive.trajectoryBuilder(generalSeq.end())
+        Trajectory leftSeq = drive.trajectoryBuilder(new Pose2d(-30,-40,270))
                 .back(22)
                 .build();
         /*
@@ -202,14 +210,29 @@ public class BlueLeft extends LinearOpMode
 
         //frontright and backright powers are inverted
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
-            drive.followTrajectorySequence(generalSeq);
+            drive.followTrajectorySequence(startSeq);
+            drive.followTrajectory(grabSeq);
+            drive.followTrajectory(deliverSeq);
+            drive.followTrajectory(grabSeq2);
+            drive.followTrajectory(deliverSeq2);
+            drive.followTrajectorySequence(backSeq);
             drive.followTrajectory(leftSeq);
 
         }else if(tagOfInterest.id == MIDDLE){ //middle
-            drive.followTrajectorySequence(generalSeq);
+            drive.followTrajectorySequence(startSeq);
+            drive.followTrajectory(grabSeq);
+            drive.followTrajectory(deliverSeq);
+            drive.followTrajectory(grabSeq2);
+            drive.followTrajectory(deliverSeq2);
+            drive.followTrajectorySequence(backSeq);
 
         }else{ //right
-            drive.followTrajectorySequence(generalSeq);
+            drive.followTrajectorySequence(startSeq);
+            drive.followTrajectory(grabSeq);
+            drive.followTrajectory(deliverSeq);
+            drive.followTrajectory(grabSeq2);
+            drive.followTrajectory(deliverSeq2);
+            drive.followTrajectorySequence(backSeq);
             drive.followTrajectory(rightSeq);
         }
 
