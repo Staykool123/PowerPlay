@@ -20,16 +20,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous //change back to teleop of no work
+@Autonomous
 public class BlueLeft extends LinearOpMode
 {
-    //    StateMachine stateMachine;
-//    private Servo claw, rotator;
-//    public static final double open = 0.2;
-//    public static final double close = 0.35;
-//    public static final double normal = 1;
-//    public static final double mid = 0.7;
-//    public static final double back = 0.38;
     private Servo claw, rotator;
     private DcMotorEx lift;
     OpenCvCamera camera;
@@ -81,7 +74,6 @@ public class BlueLeft extends LinearOpMode
 
             }
         });
-
         telemetry.setMsTransmissionInterval(50);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -136,7 +128,7 @@ public class BlueLeft extends LinearOpMode
                     claw.setPosition(0.265);
                 })
                 .lineTo(
-                        new Vector2d(-17.5,5),
+                        new Vector2d(-23,5),
                         SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
@@ -244,7 +236,6 @@ public class BlueLeft extends LinearOpMode
 
         /* Actually do something useful */
 
-        //frontright and backright powers are inverted
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
             drive.followTrajectorySequence(startSeq);
             drive.followTrajectorySequence(dropSeq);

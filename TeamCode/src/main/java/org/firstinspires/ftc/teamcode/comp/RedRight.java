@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -18,20 +19,11 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous //change back to teleop of no work
+@Autonomous
 public class RedRight extends LinearOpMode
 {
-    //    StateMachine stateMachine;
-//    private Servo claw, rotator;
-//    public static final double open = 0.2;
-//    public static final double close = 0.35;
-//    public static final double normal = 1;
-//    public static final double mid = 0.7;
-//    public static final double back = 0.38;
-    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
-    private ElapsedTime runtime = new ElapsedTime();
-    static final double     FORWARD_SPEED = 0.4;
-    static final double     BACKWARD_SPEED = -0.4;
+    private Servo claw, rotator;
+    private DcMotorEx lift;
     OpenCvCamera camera;
     CameraDetectionPipeline aprilTagDetectionPipeline;
 
@@ -63,10 +55,9 @@ public class RedRight extends LinearOpMode
         Pose2d startPose = new Pose2d(-36, -64.5, 270);
 
 
-//        stateMachine = new StateMachine(hardwareMap);
-//        stateMachine.init();
-//        claw = hardwareMap.get(Servo.class,"claw");
-//        rotator = hardwareMap.get(Servo.class,"rotator");
+        claw = hardwareMap.get(Servo.class,"claw");
+        rotator = hardwareMap.get(Servo.class,"rotator");
+        lift = hardwareMap.get(DcMotorEx.class,"lift");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new CameraDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -92,22 +83,7 @@ public class RedRight extends LinearOpMode
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence generalSeq = drive.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(-23,0))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-52, -16))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-23,0))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-52, -16))
-                //marker
-                .lineTo(new Vector2d(-30, -16))
-                .lineTo(new Vector2d(-23,0))
-                //marker
-                .lineTo(new Vector2d(-34,-40))
-                //marker
+                .strafeRight(15)
                 .build();
 
         Trajectory rightSeq = drive.trajectoryBuilder(generalSeq.end())
@@ -117,6 +93,8 @@ public class RedRight extends LinearOpMode
         Trajectory leftSeq = drive.trajectoryBuilder(generalSeq.end())
                 .back(22)
                 .build();
+
+        claw.setPosition(0.265);
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
@@ -200,7 +178,6 @@ public class RedRight extends LinearOpMode
 
         /* Actually do something useful */
 
-        //frontright and backright powers are inverted
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
             drive.followTrajectorySequence(generalSeq);
             drive.followTrajectory(leftSeq);
