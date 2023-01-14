@@ -52,7 +52,8 @@ public class BlueRight extends LinearOpMode
     public void runOpMode()
     {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d startPose = new Pose2d(-36, -64.5, 270);
+//        Pose2d startPose = new Pose2d(-36, -64.5, 270);
+        Pose2d startPose = new Pose2d(-0, 0, 0);
 
 
         claw = hardwareMap.get(Servo.class,"claw");
@@ -84,20 +85,24 @@ public class BlueRight extends LinearOpMode
 
         TrajectorySequence generalSeq = drive.trajectorySequenceBuilder(startPose)
                 .forward(22)
-                .waitSeconds(3)
+                .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0.1);
                 })
-                .back(20)
-                .strafeLeft(27)
+                .back(24)
+                .strafeLeft(20)
+                .waitSeconds(1)
+                .strafeLeft(15)
+                .waitSeconds(1)
+                .strafeRight(15)
                 .build();
 
         Trajectory rightSeq = drive.trajectoryBuilder(generalSeq.end())
-                .forward(22)
+                .forward(25)
                 .build();
 
         Trajectory leftSeq = drive.trajectoryBuilder(generalSeq.end())
-                .back(22)
+                .back(30)
                 .build();
 
         claw.setPosition(0.265);

@@ -77,81 +77,93 @@ public class BlueLeft extends LinearOpMode
         telemetry.setMsTransmissionInterval(50);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d startPose = new Pose2d(-36, -64.5, 270);
-        drive.setPoseEstimate(startPose);
-
-        Trajectory grabSeq = drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
-                .addTemporalMarker(0, () -> {
-                    rotator.setPosition(0.335);
-                    lift.setPower(1.0);
-                })
-                .addTemporalMarker(2, () -> {
-                    lift.setPower(0);
-                })
-                .splineTo(new Vector2d(-50.5,-11), Math.toRadians(180))
+        Pose2d startPose = new Pose2d(0, 0, 0);
+        TrajectorySequence generalSeq = drive.trajectorySequenceBuilder(startPose)
+                .strafeLeft(20)
+                .waitSeconds(1)
+                .strafeLeft(15)
+                .waitSeconds(1)
+                .strafeRight(15)
                 .build();
 
-        Trajectory grabSeq2= drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
-                .splineTo(new Vector2d(-51.5,-5), Math.toRadians(180))
+        Trajectory rightSeq = drive.trajectoryBuilder(generalSeq.end())
+                .forward(25)
                 .build();
 
-        Trajectory deliverSeq = drive.trajectoryBuilder(grabSeq.end())
-                .splineTo(new Vector2d(-15,-4), Math.toRadians(0))
+        Trajectory leftSeq = drive.trajectoryBuilder(generalSeq.end())
+                .back(30)
                 .build();
-
-        Trajectory deliverSeq2 = drive.trajectoryBuilder(grabSeq.end())
-                .splineTo(new Vector2d(-14,-5), Math.toRadians(0))
-                .build();
-
-        TrajectorySequence dropSeq = drive.trajectorySequenceBuilder(new Pose2d())
-                .forward(0.001)
-                .addTemporalMarker(0, () -> {
-                    lift.setPower(1.0);
-                    rotator.setPosition(0.96);
-                })
-                .addTemporalMarker(0.5, () -> {
-                    claw.setPosition(0.1);
-                    lift.setPower(0);
-                })
-                .build();
-
-        TrajectorySequence actualGrabSeq = drive.trajectorySequenceBuilder(new Pose2d())
-                .forward(1.5)
-                .addTemporalMarker(0.5, () -> {
-                    claw.setPosition(.265);
-                })
-                .build();
-
-        TrajectorySequence startSeq = drive.trajectorySequenceBuilder(startPose)
-                .addDisplacementMarker(() -> {
-                    lift.setPower(-1.0);
-                    claw.setPosition(0.265);
-                })
-                .lineTo(
-                        new Vector2d(-23,5),
-                        SampleMecanumDrive.getVelocityConstraint(18, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-                )
-                .forward(4)
-                .addDisplacementMarker(() -> {
-                    lift.setPower(0);
-                })
-
-                .build();
-
-        TrajectorySequence backSeq = drive.trajectorySequenceBuilder(deliverSeq2.end())
-                .back(7)
-                .waitSeconds(2)
-                .lineToLinearHeading(new Pose2d(-30,-40,270))
-                .build();
-
-        Trajectory rightSeq = drive.trajectoryBuilder(new Pose2d(-30,-40,270))
-                .forward(22)
-                .build();
-
-        Trajectory leftSeq = drive.trajectoryBuilder(new Pose2d(-30,-40,270))
-                .back(22)
-                .build();
+//        Pose2d startPose = new Pose2d(-36, -64.5, 270);
+//        drive.setPoseEstimate(startPose);
+//
+//        Trajectory grabSeq = drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
+//                .addTemporalMarker(0, () -> {
+//                    rotator.setPosition(0.335);
+//                    lift.setPower(1.0);
+//                })
+//                .addTemporalMarker(2, () -> {
+//                    lift.setPower(0);
+//                })
+//                .splineTo(new Vector2d(-50.5,-11), Math.toRadians(180))
+//                .build();
+//
+//        Trajectory grabSeq2= drive.trajectoryBuilder(new Pose2d(-13.5,0, 270), true)
+//                .splineTo(new Vector2d(-51.5,-5), Math.toRadians(180))
+//                .build();
+//
+//        Trajectory deliverSeq = drive.trajectoryBuilder(grabSeq.end())
+//                .splineTo(new Vector2d(-15,-4), Math.toRadians(0))
+//                .build();
+//
+//        Trajectory deliverSeq2 = drive.trajectoryBuilder(grabSeq.end())
+//                .splineTo(new Vector2d(-14,-5), Math.toRadians(0))
+//                .build();
+//
+//        TrajectorySequence dropSeq = drive.trajectorySequenceBuilder(new Pose2d())
+//                .forward(0.001)
+//                .addTemporalMarker(0, () -> {
+//                    lift.setPower(1.0);
+//                    rotator.setPosition(0.96);
+//                })
+//                .addTemporalMarker(0.5, () -> {
+//                    claw.setPosition(0.1);
+//                    lift.setPower(0);
+//                })
+//                .build();
+//
+//        TrajectorySequence actualGrabSeq = drive.trajectorySequenceBuilder(new Pose2d())
+//                .forward(1.5)
+//                .addTemporalMarker(0.5, () -> {
+//                    claw.setPosition(.265);
+//                })
+//                .build();
+//
+//        TrajectorySequence startSeq = drive.trajectorySequenceBuilder(startPose)
+//                .addDisplacementMarker(() -> {
+//                    lift.setPower(-1.0);
+//                    claw.setPosition(0.265);
+//                })
+//                .lineTo(new Vector2d(-23,5))
+//                .forward(4)
+//                .addDisplacementMarker(() -> {
+//                    lift.setPower(0);
+//                })
+//
+//                .build();
+//
+//        TrajectorySequence backSeq = drive.trajectorySequenceBuilder(deliverSeq2.end())
+//                .back(7)
+//                .waitSeconds(2)
+//                .lineToLinearHeading(new Pose2d(-30,-40,270))
+//                .build();
+//
+//        Trajectory rightSeq = drive.trajectoryBuilder(new Pose2d(-30,-40,270))
+//                .forward(22)
+//                .build();
+//
+//        Trajectory leftSeq = drive.trajectoryBuilder(new Pose2d(-30,-40,270))
+//                .back(22)
+//                .build();
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
@@ -237,31 +249,36 @@ public class BlueLeft extends LinearOpMode
         /* Actually do something useful */
 
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
-            drive.followTrajectorySequence(startSeq);
-            drive.followTrajectorySequence(dropSeq);
-            drive.followTrajectory(grabSeq);
-            drive.followTrajectorySequence(actualGrabSeq);
-            drive.followTrajectory(deliverSeq);
-            drive.followTrajectory(grabSeq2);
-            drive.followTrajectory(deliverSeq2);
-            drive.followTrajectorySequence(backSeq);
+//            drive.followTrajectorySequence(startSeq);
+//            drive.followTrajectorySequence(dropSeq);
+//            drive.followTrajectory(grabSeq);
+//            drive.followTrajectorySequence(actualGrabSeq);
+//            drive.followTrajectory(deliverSeq);
+//            drive.followTrajectory(grabSeq2);
+//            drive.followTrajectory(deliverSeq2);
+//            drive.followTrajectorySequence(backSeq);
+//            drive.followTrajectory(leftSeq);
+            drive.followTrajectorySequence(generalSeq);
             drive.followTrajectory(leftSeq);
 
         }else if(tagOfInterest.id == MIDDLE){ //middle
-            drive.followTrajectorySequence(startSeq);
-            drive.followTrajectory(grabSeq);
-            drive.followTrajectory(deliverSeq);
-            drive.followTrajectory(grabSeq2);
-            drive.followTrajectory(deliverSeq2);
-            drive.followTrajectorySequence(backSeq);
+//            drive.followTrajectorySequence(startSeq);
+//            drive.followTrajectory(grabSeq);
+//             drive.followTrajectory(deliverSeq);
+//            drive.followTrajectory(grabSeq2);
+//            drive.followTrajectory(deliverSeq2);
+//            drive.followTrajectorySequence(backSeq);
+            drive.followTrajectorySequence(generalSeq);
 
         }else{ //right
-            drive.followTrajectorySequence(startSeq);
-            drive.followTrajectory(grabSeq);
-            drive.followTrajectory(deliverSeq);
-            drive.followTrajectory(grabSeq2);
-            drive.followTrajectory(deliverSeq2);
-            drive.followTrajectorySequence(backSeq);
+//            drive.followTrajectorySequence(startSeq);
+//            drive.followTrajectory(grabSeq);
+//            drive.followTrajectory(deliverSeq);
+//            drive.followTrajectory(grabSeq2);
+//            drive.followTrajectory(deliverSeq2);
+//            drive.followTrajectorySequence(backSeq);
+//            drive.followTrajectory(rightSeq);
+            drive.followTrajectorySequence(generalSeq);
             drive.followTrajectory(rightSeq);
         }
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.comp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,7 +16,7 @@ public class Teleop extends OpMode {
     boolean aButtonPreviousState = false;
     boolean slowModeActive = false;
     public static final double open = 0.1;
-    public static final double close = 0.265;
+    public static final double close = 0.27;
     public static final double normal = 0.96  ;
     //    public static final double mid = 0.7;
     public static final double back = 0.335;
@@ -168,6 +169,11 @@ public class Teleop extends OpMode {
             stateMachine.setLiftState(StateMachine.LiftState.STACK);
             stateMachine.runLiftState();
         }
+        if(gamepad2.dpad_right){
+            stateMachine.setLiftState(StateMachine.LiftState.STACK);
+            stateMachine.runLiftState();
+        }
+
         if (gamepad1.left_bumper) {
             rotator.setPosition(rotator.getPosition() + 0.0005);
         }

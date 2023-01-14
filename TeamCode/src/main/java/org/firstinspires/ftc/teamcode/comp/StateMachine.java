@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.comp;
+import android.os.SystemClock;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -72,20 +73,20 @@ public class StateMachine {
         moveToTarget(1, 1);
     }
     public void low(){
-        moveToTarget(2300, 0.9);
+        moveToTarget(4600, 1);
     }
     public void medium(){
-        moveToTarget(4000,.9);
+        moveToTarget(8000,1);
     }
     public void high(){
-        moveToTarget(5700,1);
+        moveToTarget(10800,1);
     }
-    public void stackoffi(){moveToTarget(900,0.9);}
+    public void stackoffi(){moveToTarget(1600,1);}
     public void stackDecrease(){
-        moveToTarget(lift.getCurrentPosition() - 150,1);
+        moveToTarget(lift.getCurrentPosition() - 200,1);
     }
     public void stackIncrease(){
-        moveToTarget(lift.getCurrentPosition() + 100,1);
+        moveToTarget(lift.getCurrentPosition() + 200,1);
     }
     public void panic(){
         lift.setPower(0);
