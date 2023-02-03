@@ -77,6 +77,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
+//    double multiplier = 12 / batteryVoltageSensor.getVoltage();
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -122,6 +123,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
         rightRear = hardwareMap.get(DcMotorEx.class, "backRight");
         rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
+//        leftFront.setPower(multiplier * .8);
+//        leftRear.setPower(multiplier * .8);
+//        rightFront.setPower(multiplier * .8);
+//        rightRear.setPower(multiplier * .8);
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
