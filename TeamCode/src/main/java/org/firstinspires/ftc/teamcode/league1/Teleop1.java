@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-
+@Disabled
 @TeleOp
 public class Teleop1 extends OpMode {
         private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;

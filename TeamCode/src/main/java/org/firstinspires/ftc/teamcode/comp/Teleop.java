@@ -43,8 +43,6 @@ public class Teleop extends OpMode {
 
         claw = hardwareMap.get(Servo.class,"claw");
         rotator = hardwareMap.get(Servo.class,"rotator");
-        claw.setPosition(open);
-        rotator.setPosition(normal);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }

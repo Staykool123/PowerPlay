@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.testing;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -6,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.testing.Testinglift;
-
+@Disabled
 @TeleOp
 public class Teleoptesting extends OpMode {
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftDrive;

@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
-
+@Disabled
 @TeleOp
 public class ClawServo extends OpMode {
     private Servo leftclaw, rightclaw;

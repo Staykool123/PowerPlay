@@ -66,7 +66,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp
-//@Disabled
+@Disabled
 public class EncoderSliderTesting extends OpMode {
 
     private DcMotorEx liftDrive;

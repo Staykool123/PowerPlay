@@ -4,13 +4,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
@@ -19,9 +19,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
-
 @Autonomous
-public class BlueLeft extends LinearOpMode
+public class JustPark extends LinearOpMode
 {
     private Servo claw, rotator;
     private DcMotorEx lift;
@@ -52,6 +51,11 @@ public class BlueLeft extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+//        Pose2d startPose = new Pose2d(-36, -64.5, 270);
+        Pose2d startPose = new Pose2d(-0, 0, 0);
+
+
         claw = hardwareMap.get(Servo.class,"claw");
         rotator = hardwareMap.get(Servo.class,"rotator");
         lift = hardwareMap.get(DcMotorEx.class,"lift");
@@ -74,97 +78,30 @@ public class BlueLeft extends LinearOpMode
 
             }
         });
+
         telemetry.setMsTransmissionInterval(50);
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d startPose = new Pose2d(-36, -64.5, 270);
         drive.setPoseEstimate(startPose);
 
-        TrajectorySequence startSeq = drive.trajectorySequenceBuilder(startPose)
-                .lineTo(
-                        new Vector2d(-22, 0),
-                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-                )
-                .addTemporalMarker(0, () -> {
-                    lift.setPower(-1.0);
-                })
-                .addTemporalMarker(6.6, () -> {
-                    lift.setPower(0);
-                })
+        TrajectorySequence generalSeq = drive.trajectorySequenceBuilder(startPose)
+                .strafeLeft(20)
+                .waitSeconds(1)
+                .strafeLeft(15)
+                .waitSeconds(1)
+                .strafeRight(10)
                 .build();
 
-        Trajectory dropSeq = drive.trajectoryBuilder(new Pose2d(-22,0,270))
-                .lineToConstantHeading(new Vector2d(-18,0))
-                .addTemporalMarker(0, () -> {
-                    rotator.setPosition(.96);
-                })
-                .addTemporalMarker(.75, () -> {
-                    claw.setPosition(0.1);
-                })
+        Trajectory rightSeq = drive.trajectoryBuilder(generalSeq.end())
+                .forward(25)
                 .build();
 
-        Trajectory resetSeq = drive.trajectoryBuilder(new Pose2d(-18,0,270))
-                .lineToConstantHeading(new Vector2d(-21,0))
-                .addTemporalMarker(0, () -> {
-                    lift.setPower(1.0);
-                })
-                .addTemporalMarker(6.6, () -> {
-                    lift.setPower(0);
-                })
+        Trajectory leftSeq = drive.trajectoryBuilder(generalSeq.end())
+                .back(26)
                 .build();
-
-        Trajectory lmaoresetSeq = drive.trajectoryBuilder(new Pose2d(-24,0,270))
-                .lineToConstantHeading(new Vector2d(-36, -40))
-                .build();
-
-        Trajectory backSeq = drive.trajectoryBuilder(new Pose2d(-36, -40, 270))
-                .lineTo((new Vector2d(-50, -40)))
-                .build();
-
-        Trajectory frontSeq = drive.trajectoryBuilder(new Pose2d(-36, -40, 270))
-                .lineTo((new Vector2d(-24, -40)))
-                .build();
-
-//        TrajectorySequence coneSeq = drive.trajectorySequenceBuilder((new Pose2d(-18.5,0,270)))
-//                .lineToLinearHeading(new Pose2d(-24,-15,270))
-//                .lineToLinearHeading(new Pose2d(-54,-15,270))
-//                .addTemporalMarker(0, () -> {
-//                    lift.setPower(0.675);
-//                })
-//                .addTemporalMarker(4, () -> {
-//                    lift.setPower(0);
-//                })
-//                .addTemporalMarker(0, () -> {
-//                    rotator.setPosition(.335);
-//                })
-//                .addTemporalMarker(5, () -> {
-//                    claw.setPosition(.27);
-//                })
-//                .build();
-//
-//        TrajectorySequence againSeq = drive.trajectorySequenceBuilder((new Pose2d(-54,-15,270)))
-//                .lineToLinearHeading(new Pose2d(-24,-15,270))
-//                .lineToLinearHeading(new Pose2d(-18.5,0,270))
-//                .addTemporalMarker(0, () -> {
-//                    lift.setPower(-1.0);
-//                })
-//                .addTemporalMarker(4, () -> {
-//                    lift.setPower(0);
-//                })
-//                .addTemporalMarker(1, () -> {
-//                    rotator.setPosition(.96);
-//                })
-//                .build();
-
-
-
-
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        claw.setPosition(0.24);
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -245,18 +182,15 @@ public class BlueLeft extends LinearOpMode
         /* Actually do something useful */
 
         if(tagOfInterest == null || tagOfInterest.id == LEFT){ //left
-            drive.followTrajectorySequence(startSeq);
-            drive.followTrajectory(dropSeq);
-            drive.followTrajectory(resetSeq);
-            drive.followTrajectory(lmaoresetSeq);
-            drive.followTrajectory(backSeq);
-//            drive.followTrajectorySequence(coneSeq);
-//            drive.followTrajectorySequence(againSeq);
+            drive.followTrajectorySequence(generalSeq);
+            drive.followTrajectory(leftSeq);
 
         }else if(tagOfInterest.id == MIDDLE){ //middle
+            drive.followTrajectorySequence(generalSeq);
 
         }else{ //right
-
+            drive.followTrajectorySequence(generalSeq);
+            drive.followTrajectory(rightSeq);
         }
 
 
